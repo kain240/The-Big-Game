@@ -6,39 +6,41 @@ import uuid
 logger = logging.getLogger()
 
 class System:
-    active_rooms: list[Room]
-    archived_rooms: list[Room]
+    _active_rooms: list[Room]
+    _archived_rooms: list[Room]
 
-    registered_players: list[player.Player]
-    active_players: dict[uuid.UUID: any]
+    _registered_players: list[player.Player]
+    _active_players_id: dict[uuid.UUID: any]
 
     def __init__(self):
-        self.active_rooms = []
-        self.active_players_id = []
-        self.registered_players = []
+        self._active_rooms = []
+        self._active_players_id = []
+        self._registered_players = []
 
-    def create_room(self, owner_id):
+    def create_room(self, owner_id: uuid.UUID) -> str:
         new_room = create_room(owner_id)
-        self.active_rooms.append(new_room)
-        logger.info(f"room {new_room.id} created by {owner_id}")
+        self._active_rooms.append(new_room)
+        logger.info(f"room {new_room._id} created by {owner_id}")
+        return new_room._id.hex
 
     def get_rooms(self, room_id: str):
         if room_id is None:
-            return self.active_rooms
+            return self._active_rooms
         else:
-            return [room for room in self.active_rooms if room.id.hex == room_id]
+            return [room for room in self._active_rooms if room._id.hex == room_id]
 
-    def __archive_room__(self, room_id: uuid.UUID):
-        for room in self.active_rooms:
-            if room.id == room_id or room.id.hex == room_id:
-                self.archived_rooms.append(room)
-                self.active_rooms.remove(room)
+    def _archive_room(self, room_id: uuid.UUID):
+        for room in self._active_rooms:
+            if room._id == room_id or room._id.hex == room_id:
+                self._archived_rooms.append(room)
+                self._active_rooms.remove(room)
                 break
 
-    def player_login(self, player_id: str) -> player.Player:
-        for player in self.registered_players:
-            if player.id.hex == player_id:
-                return player
+    def player_login(self, player_name: str) -> player.Player:
+        for registered_player in self._registered_players:
+            if registered_player.name == player_name:
+                return registered_player
 
     def register_player(self, name: str):
-        player.
+        new_player = player.register(name)
+        self._registered_players.append(new_player)
