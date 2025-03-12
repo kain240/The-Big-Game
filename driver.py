@@ -16,4 +16,4 @@ player2.websocket_connection = room.join(player2)
 
 room.start_game()
 
-room.end_game()
+room.result()

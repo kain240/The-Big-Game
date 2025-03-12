@@ -1,10 +1,16 @@
 from abc import ABC, abstractmethod
+from players import Player
+from .move import Move
+
 
 class Game(ABC):
     _status: str
+    _players: list[Player]
+    _state: any
+    _turn: list[Move]
 
     @abstractmethod
-    def configure(self):
+    def configure(self, config: dict):
         pass
 
     @abstractmethod
@@ -19,10 +25,10 @@ class Game(ABC):
     def proceed(self):
         pass
 
-    @property
-    def status(self):
-        return self._status
-
     @abstractmethod
     def result(self):
         pass
+
+    @property
+    def status(self):
+        return self._status

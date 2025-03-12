@@ -1,5 +1,5 @@
 from room import create_room, Room
-import player
+import players
 import logging
 import uuid
 
@@ -9,7 +9,7 @@ class System:
     _active_rooms: list[Room]
     _archived_rooms: list[Room]
 
-    _registered_players: list[player.Player]
+    _registered_players: list[players.Player]
     _active_players_id: dict[uuid.UUID: any]
 
     def __init__(self):
@@ -36,11 +36,11 @@ class System:
                 self._active_rooms.remove(room)
                 break
 
-    def player_login(self, player_name: str) -> player.ActivePlayer:
+    def player_login(self, player_name: str) -> players.ActivePlayer:
         for registered_player in self._registered_players:
             if registered_player.name == player_name:
-                return player.ActivePlayer(registered_player, None)
+                return players.ActivePlayer(registered_player, None)
 
     def register_player(self, name: str):
-        new_player = player.register(name)
+        new_player = players.register(name)
         self._registered_players.append(new_player)
