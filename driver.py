@@ -11,8 +11,8 @@ player2 = game_system.player_login('khushi')
 new_room_id = game_system.create_room(player1.id)
 room = game_system.get_rooms(room_id=new_room_id)[0]
 
-room.join(player1)
-room.join(player2)
+player1.websocket_connection = room.join(player1)
+player2.websocket_connection = room.join(player2)
 
 room.start_game()
 

@@ -1,14 +1,16 @@
 from uuid import UUID, uuid4
-import game_interface
+import game
+import player
+
 
 class Room:
-    _player_ids: list[UUID]
+    _players: list[player.ActivePlayer]
     _owner_id: UUID
-    _game: game_interface.Game
+    _game: game.Game
 
     def __init__(self, owner_id: UUID):
         self._id = uuid4()
-        self._player_ids = [owner_id]
+        self._players = []
         self._owner_id = owner_id
 
     def _announce(self, message: str):
@@ -17,25 +19,29 @@ class Room:
     def _individual_message(self, player_id: UUID, message: str):
         pass
 
-    def join(self, player_id: UUID):
-        if player_id != self._owner_id:
+    def join(self, active_player: player.ActivePlayer):
+        if active_player.player_info.id != self._owner_id:
             # validate the join request
             pass
 
-        self._player_ids.append(player_id)
+        self._players.append(active_player)
+        self._announce(f"player: {active_player.player_info.name} is added")
 
-    def add_player(self, player_id: UUID):
-        self._player_ids.append(player_id)
-        self._announce(f"player {player_id} is added")
-
-    def remove_player(self, player_id: UUID):
-        self._player_ids.remove(player_id)
+    # def remove_player(self, player_id: UUID):
+    #     self._players.remove(player_id)
 
     def start_game(self):
         self._game.start()
+        while self._game.status != game.Status.Ended:
+            self._game.validate()
+            self._game.proceed()
 
     def _allow_player(self, player_id):
         pass
 
     def end_game(self):
         pass
+
+    @property
+    def id(self):
+        return self._id

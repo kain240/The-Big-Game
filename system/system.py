@@ -20,26 +20,26 @@ class System:
     def create_room(self, owner_id: uuid.UUID) -> str:
         new_room = create_room(owner_id)
         self._active_rooms.append(new_room)
-        logger.info(f"room {new_room._id} created by {owner_id}")
-        return new_room._id.hex
+        logger.info(f"room {new_room.id} created by {owner_id}")
+        return new_room.id.hex
 
     def get_rooms(self, room_id: str):
         if room_id is None:
             return self._active_rooms
         else:
-            return [room for room in self._active_rooms if room._id.hex == room_id]
+            return [room for room in self._active_rooms if room.id.hex == room_id]
 
     def _archive_room(self, room_id: uuid.UUID):
         for room in self._active_rooms:
-            if room._id == room_id or room._id.hex == room_id:
+            if room.id == room_id or room.id.hex == room_id:
                 self._archived_rooms.append(room)
                 self._active_rooms.remove(room)
                 break
 
-    def player_login(self, player_name: str) -> player.Player:
+    def player_login(self, player_name: str) -> player.ActivePlayer:
         for registered_player in self._registered_players:
             if registered_player.name == player_name:
-                return registered_player
+                return player.ActivePlayer(registered_player, None)
 
     def register_player(self, name: str):
         new_player = player.register(name)

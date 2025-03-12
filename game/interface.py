@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
 class Game(ABC):
+    _status: str
+
     @abstractmethod
     def configure(self):
         pass
@@ -17,9 +19,9 @@ class Game(ABC):
     def proceed(self):
         pass
 
-    @abstractmethod
+    @property
     def status(self):
-        pass
+        return self._status
 
     @abstractmethod
     def result(self):
